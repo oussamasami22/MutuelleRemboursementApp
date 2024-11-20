@@ -1,0 +1,34 @@
+# Application Configuration
+spring:
+  application:
+    name: System_Metuelle
+
+  # DataSource Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/mutuelle # Database connection URL
+    username: root # Database username
+    password:  # Replace with your MySQL root password
+    driver-class-name: com.mysql.cj.jdbc.Driver # JDBC Driver for MySQL
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect # MySQL 8 Dialect for Hibernate
+    hibernate:
+      ddl-auto: update # Automatically update the database schema based on JPA entities
+    show-sql: true # Logs SQL queries in the console (disable for production)
+    properties:
+      hibernate:
+        format_sql: true # Formats SQL queries for better readability
+
+# Server Configuration
+server:
+  port: 8085 # Application will run on port 8084
+
+# Logging Configuration
+logging:
+  level:
+    root: info # Default logging level
+    org.springframework: debug # Debug level for Spring framework logs
+    org.hibernate.SQL: debug # Logs Hibernate-generated SQL queries
+    org.hibernate.type.descriptor.sql.BasicBinder: trace # Logs parameter bindings for SQL queries
+
