@@ -1,23 +1,21 @@
 package ma.ensa.system_metuelle.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.validator.constraints.Range;
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor @NoArgsConstructor @Data
 public class MedicamentReferentiel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    @Column(unique = true, nullable = false)
+    private String codeBarre;
     private String nomMedicament;
-    private Double prixReference;
-    private Double pourcentageRemboursement;
+    private double prixMedicament;
+    @Range(min = 0, max = 1)
+    private double tauxRemboursement;
 }
 
 
-}
+
