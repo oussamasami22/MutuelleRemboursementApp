@@ -9,15 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor  @AllArgsConstructor @Data
-public class Traitement {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private  String codeBarre;
-    private Boolean existe;
+@AllArgsConstructor @NoArgsConstructor @Data
+public class MedicamentReferentiel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  Long id;
     private String nomMedicament;
-    private String typeMedicament;
-    private double prixMedicament;
+    private Double prixReference;
+    private Double pourcentageRemboursement;
+}
 
 
 }
