@@ -5,16 +5,16 @@ import ma.ensa.system_metuelle.models.Dossier;
 import ma.ensa.system_metuelle.models.RembAssure;
 import ma.ensa.system_metuelle.repositories.RembAssureRepository;
 import org.aspectj.apache.bcel.Repository;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.listener.CompositeItemProcessListener;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemReaderException;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.ItemWriterException;
+import org.springframework.batch.item.*;
+import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
@@ -24,6 +24,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.logging.Logger;
+
 @Configuration
 public class BatchConfig {
     private final RembAssureRepository rembAssureRepository;
@@ -57,6 +60,7 @@ public class BatchConfig {
                 .skipLimit(10)
                 .skip(ValidationException.class)
                 .skip(RuntimeException.class)
+                .listener(skipListener())
                 .build();
 
 
@@ -74,13 +78,53 @@ public class BatchConfig {
      public CompositeItemProcessor compositeItemProcessor(){
         return new CompositeItemProcessor();
      }
-
-    private ItemWriter<RembAssure> writer() {
+@Bean
+    public ItemWriter<RembAssure> writer() {
         RepositoryItemWriter<RembAssure>  writer = new RepositoryItemWriter<>();
         writer.setRepository(rembAssureRepository);
         writer.setMethodName("save");
         return  writer;
 
     }
+    @Bean
+    public ItemProcessor<Dossier, RembAssure> itemProcessor(){
+        return dossier -> {
+            // Validation des champs
+            if (dossier.getNomAssure() == null || dossier.getNomAssure().isEmpty()) {
+                throw new ValidationException("Le nom de l'assuré est manquant !");
+            }
 
+            // Création de l'objet RembAssure
+            RembAssure rembAssure = new RembAssure();
+            rembAssure.setNomAssure(dossier.getNomAssure());
+            rembAssure.setNumeroAffiliation(dossier.getNumeroAffiliation());
+            rembAssure.setImmatriculation(dossier.getImmatriculation());
+
+            // Calcul du montant total remboursé
+            double montantRemboursement = calculateTotalRemboursement(dossier);
+            rembAssure.setTotalRembouresement(montantRemboursement);
+
+            return rembAssure;
+        };
+    }
+    @Bean
+    public SkipListener<Dossier,RembAssure> skipListener(){
+        return new SkipListener<Dossier, RembAssure>() {
+            private final Logger logger = (Logger) LoggerFactory.getLogger("BatchLogger");
+            @Override
+            public void onSkipInRead(Throwable t) {
+                logger.warning("Skip un item durant la lecture de données : " + t.getMessage());
+            }
+
+            @Override
+            public void onSkipInWrite(RembAssure item, Throwable t) {
+                logger.warning("Skip un item durant l'ecriture des donnees :" + t.getMessage());
+            }
+
+            @Override
+            public void onSkipInProcess(Dossier item, Throwable t) {
+               logger.warning("Skip un item durant le traitement :" + t.getMessage());
+            }
+        };
+    }
 }
