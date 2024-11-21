@@ -3,7 +3,9 @@ package ma.ensa.system_metuelle.processors;
 import ma.ensa.system_metuelle.models.Dossier;
 import ma.ensa.system_metuelle.models.RembAssure;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConsultationProcessor implements ItemProcessor<Dossier, Dossier> {
   private final double tauxConsultation = 0.7;
     @Override
