@@ -86,44 +86,24 @@ public class BatchConfig {
         return  writer;
 
     }
-    @Bean
-    public ItemProcessor<Dossier, RembAssure> itemProcessor(){
-        return dossier -> {
-            // Validation des champs
-            if (dossier.getNomAssure() == null || dossier.getNomAssure().isEmpty()) {
-                throw new ValidationException("Le nom de l'assuré est manquant !");
-            }
 
-            // Création de l'objet RembAssure
-            RembAssure rembAssure = new RembAssure();
-            rembAssure.setNomAssure(dossier.getNomAssure());
-            rembAssure.setNumeroAffiliation(dossier.getNumeroAffiliation());
-            rembAssure.setImmatriculation(dossier.getImmatriculation());
-
-            // Calcul du montant total remboursé
-            double montantRemboursement = calculateTotalRemboursement(dossier);
-            rembAssure.setTotalRembouresement(montantRemboursement);
-
-            return rembAssure;
-        };
-    }
     @Bean
     public SkipListener<Dossier,RembAssure> skipListener(){
         return new SkipListener<Dossier, RembAssure>() {
             private final Logger logger = (Logger) LoggerFactory.getLogger("BatchLogger");
             @Override
             public void onSkipInRead(Throwable t) {
-                logger.warning("Skip un item durant la lecture de données : " + t.getMessage());
+                logger.warning("Skip item durant la lecture de données : " + t.getMessage());
             }
 
             @Override
             public void onSkipInWrite(RembAssure item, Throwable t) {
-                logger.warning("Skip un item durant l'ecriture des donnees :" + t.getMessage());
+                logger.warning("Skip item durant l'ecriture des donnees :" + t.getMessage());
             }
 
             @Override
             public void onSkipInProcess(Dossier item, Throwable t) {
-               logger.warning("Skip un item durant le traitement :" + t.getMessage());
+               logger.warning("Skip item durant le traitement :" + t.getMessage());
             }
         };
     }

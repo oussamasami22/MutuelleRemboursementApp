@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import lombok.*;
 
-@NoArgsConstructor  @AllArgsConstructor @Data
+@Data @NoArgsConstructor  @AllArgsConstructor
 public class Traitement {
     private  String codeBarre;
     private Boolean existe;
