@@ -4,7 +4,9 @@ import ma.ensa.system_metuelle.models.Dossier;
 import ma.ensa.system_metuelle.models.RembAssure;
 import ma.ensa.system_metuelle.models.Traitement;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TotalRembouresmentProcessor implements ItemProcessor<Dossier, RembAssure> {
 
     @Override
