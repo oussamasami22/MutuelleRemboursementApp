@@ -3,12 +3,15 @@ package ma.ensa.system_metuelle.processors;
 import ma.ensa.system_metuelle.models.Dossier;
 import ma.ensa.system_metuelle.models.MedicamentReferentiel;
 import ma.ensa.system_metuelle.models.Traitement;
+import ma.ensa.system_metuelle.services.interfaces.IMedRefService;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TraitementMappingProcessor implements ItemProcessor<Dossier,Dossier> {
     @Autowired
-    private  IMedRefService medRefService;
+    private IMedRefService medRefService;
     @Override
     public Dossier process(Dossier item) throws Exception {
 
@@ -18,4 +21,5 @@ public class TraitementMappingProcessor implements ItemProcessor<Dossier,Dossier
             traitement.setExiste(ref != null);
         }
         return item;
+}
 }
