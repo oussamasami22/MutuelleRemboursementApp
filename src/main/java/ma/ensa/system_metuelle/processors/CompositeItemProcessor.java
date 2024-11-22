@@ -6,7 +6,9 @@ import ma.ensa.system_metuelle.models.Dossier;
 import ma.ensa.system_metuelle.models.RembAssure;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor @NoArgsConstructor
 public class CompositeItemProcessor implements ItemProcessor<Dossier, RembAssure> {
 
