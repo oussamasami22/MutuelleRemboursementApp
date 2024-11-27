@@ -1,7 +1,7 @@
 # Application Configuration
 spring:
   application:
-    name: System_Metuelle
+    name: system_metuelle
 
   # DataSource Configuration
   datasource:
@@ -22,7 +22,7 @@ spring:
 
 # Server Configuration
 server:
-  port: 8085 # Application will run on port 8084
+  port: 8080 # Application will run on port 8084
 
 # Logging Configuration
 logging:

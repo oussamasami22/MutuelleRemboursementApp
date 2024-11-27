@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.listener.CompositeItemProcessListener;
 import org.springframework.batch.core.repository.JobRepository;
@@ -28,6 +29,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.logging.Logger;
 
 @Configuration
+@EnableBatchProcessing
 public class BatchConfig {
     private final RembAssureRepository rembAssureRepository;
     private final CompositeItemProcessor compositeItemProcessor;
@@ -51,12 +53,9 @@ public class BatchConfig {
         return new StepBuilder("step1", jobRepository)
                 .<Dossier, RembAssure>chunk(10, platformTransactionManager)
                 .reader(jsonReader())
-                .processor(compositeItemProcessor)
+                .processor(compositeItemProcessor())
                 .writer(writer())
                 .faultTolerant()
-                .retryLimit(3)
-                .retry(ItemReaderException.class)
-                .retry(ItemWriterException.class)
                 .skipLimit(10)
                 .skip(ValidationException.class)
                 .skip(RuntimeException.class)
